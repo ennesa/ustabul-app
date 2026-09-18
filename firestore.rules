@@ -1,0 +1,116 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function changedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    function isParticipant(conversationId) {
+      return signedIn() && request.auth.uid in conversationId.split('_');
+    }
+
+    // Metadata - herkese açık (login öncesi yüklenir), yazma yalnızca konsoldan
+    match /metadata/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Kullanıcılar
+    // Başka bir kullanıcının dokümanına yalnızca puanlama alanları yazılabilir
+    // (müşteri, işi değerlendirirken ustanın puanını günceller).
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId)
+                    || (signedIn() && changedKeys().hasOnly(['rating', 'reviewCount', 'reviews']));
+      allow delete: if isOwner(userId);
+    }
+
+    // İlanlar
+    match /jobs/{jobId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+
+      allow update: if signedIn() && (
+        // İlan sahibi (userId değiştirilemez)
+        (resource.data.userId == request.auth.uid
+          && request.resource.data.userId == resource.data.userId)
+        // Teklif veren usta: yalnızca sayaç ve teklif verenler listesi
+        || changedKeys().hasOnly(['offerCount', 'offeredProIds'])
+        // Kabul edilen usta: yalnızca iş durumu ve zaman damgaları
+        || (resource.data.acceptedProId == request.auth.uid
+            && changedKeys().hasOnly(['status', 'proStartedAt', 'proFinishedAt']))
+      );
+
+      allow delete: if signedIn() && resource.data.userId == request.auth.uid;
+
+      match /offers/{offerId} {
+        allow read: if signedIn();
+        allow create: if signedIn() && request.resource.data.proId == request.auth.uid;
+        // Teklif sahibi fiyatı günceller; ilan sahibi teklifi kabul eder
+        allow update: if signedIn() && (
+          resource.data.proId == request.auth.uid
+          || get(/databases/$(database)/documents/jobs/$(jobId)).data.userId == request.auth.uid
+        );
+        allow delete: if false;
+      }
+    }
+
+    // Sohbetler: yalnızca iki katılımcı
+    match /conversations/{conversationId} {
+      allow read: if signedIn() && request.auth.uid in resource.data.participants;
+      allow create: if isParticipant(conversationId)
+                    && request.auth.uid in request.resource.data.participants;
+      allow update: if signedIn()
+                    && request.auth.uid in resource.data.participants
+                    && request.auth.uid in request.resource.data.participants;
+
+      match /messages/{messageId} {
+        allow read: if isParticipant(conversationId);
+        allow create: if isParticipant(conversationId)
+                      && request.resource.data.senderId == request.auth.uid;
+        // Alıcı yalnızca "okundu" bilgisini günceller
+        allow update: if isParticipant(conversationId)
+                      && changedKeys().hasOnly(['read']);
+        allow delete: if false;
+      }
+    }
+
+    // Cüzdan işlemleri: yalnızca kendi kayıtlarını görür / oluşturur, değiştirilemez
+    match /transactions/{transactionId} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Bildirimler: herkes başkasına bildirim oluşturabilir, yalnızca sahibi okur
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && resource.data.targetUserId == request.auth.uid;
+      allow create: if signedIn();
+      allow update: if signedIn()
+                    && resource.data.targetUserId == request.auth.uid
+                    && changedKeys().hasOnly(['read']);
+      allow delete: if false;
+    }
+
+    // Şikayetler: yalnızca oluşturulabilir (okuma konsoldan)
+    match /reports/{reportId} {
+      allow create: if signedIn() && request.resource.data.reporterId == request.auth.uid;
+    }
+
+    // KVKK talepleri
+    match /kvkkRequests/{requestId} {
+      allow read: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}

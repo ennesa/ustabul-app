@@ -1,0 +1,43 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidImage() {
+      return request.resource.size < 5 * 1024 * 1024
+          && request.resource.contentType.matches('image/.*');
+    }
+
+    // Kullanıcı dosyaları (profil fotoğrafı)
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId && isValidImage();
+      // "write" silmeyi kapsasa da request.resource silmede null olduğu için ayrıca tanımlanır
+      allow delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Usta portföy görselleri
+    match /portfolios/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId && isValidImage();
+      allow delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // İlan fotoğrafları: silme yalnızca ilan sahibine açık
+    match /jobs/{jobId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && isValidImage();
+      allow delete: if isAuthenticated()
+                    && firestore.get(/databases/(default)/documents/jobs/$(jobId)).data.userId == request.auth.uid;
+    }
+
+    // Sohbet görselleri: yalnızca konuşmanın iki tarafı (chatId = "uid1_uid2")
+    match /chats/{chatId}/{allPaths=**} {
+      allow read: if isAuthenticated() && request.auth.uid in chatId.split('_');
+      allow write: if isAuthenticated() && request.auth.uid in chatId.split('_') && isValidImage();
+    }
+  }
+}

@@ -41,6 +41,8 @@ npx expo run:android
 - Anahtarlar ve gizli bilgiler kaynak koda yazılmaz; `.env`, `google-services.json` ve `functions/.env` git'e eklenmez.
 - Ödeme çağrıları yalnızca kimliği doğrulanmış kullanıcılar için sunucu tarafında (Cloud Functions) yapılır.
 - "Beni hatırla" yalnızca e-postayı saklar; şifre cihazda tutulmaz.
+- Firestore ve Storage güvenlik kuralları repodadır (`firestore.rules`, `storage.rules`): sohbetler yalnızca iki katılımcıya açıktır, kullanıcı / ilan / teklif yazmaları rol ve alan bazlı kısıtlanmıştır.
+- Bilinen sınır: cüzdan bakiyesi ve abonelik alanları şu an istemciden yazılmaktadır; sunucu tarafına (Cloud Functions) taşınması planlanmıştır.
 
 ## Geliştirici
 
