@@ -6,14 +6,29 @@ Müşterileri yakındaki ustalarla buluşturan iki taraflı (müşteri / usta) b
 
 ## Ekran görüntüleri
 
+### Müşteri tarafı
+
 <p align="center">
-  <img src="docs/screenshots/preview.png" alt="UstaBul ekran görüntüleri" width="100%">
+  <img src="docs/screenshots/preview-musteri.png" alt="UstaBul müşteri ekranları" width="100%">
 </p>
 
-| | | | | |
+| Ana ekran | Hizmet seçimi | Gelen teklifler | Mesajlaşma | Ayarlar |
 |:---:|:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/01-ana-ekran.png" width="170"> | <img src="docs/screenshots/02-hizmet-sec.png" width="170"> | <img src="docs/screenshots/03-ilan-detayi.png" width="170"> | <img src="docs/screenshots/04-ayarlar.png" width="170"> | <img src="docs/screenshots/05-mesajlasma.png" width="170"> |
-| Ana ekran ve hizmet kategorileri | Hizmet seçimi | İlan detayı | Ayarlar, KVKK ve yasal metinler | Müşteri – usta mesajlaşma |
+| <img src="docs/screenshots/01-ana-ekran.png" width="150"> | <img src="docs/screenshots/02-hizmet-sec.png" width="150"> | <img src="docs/screenshots/03-gelen-teklifler.png" width="150"> | <img src="docs/screenshots/04-mesajlasma.png" width="150"> | <img src="docs/screenshots/05-ayarlar.png" width="150"> |
+
+Müşteri ilan açar, ustalardan gelen fiyat tekliflerini görür, ustayla mesajlaşır ve teklifi kabul eder.
+
+### Usta tarafı
+
+<p align="center">
+  <img src="docs/screenshots/preview-usta.png" alt="UstaBul usta ekranları" width="80%">
+</p>
+
+| Usta profili | İlana teklif ver | Teklif gönderildi | Kazanç istatistikleri |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/06-usta-profili.png" width="170"> | <img src="docs/screenshots/07-ilan-teklif-ver.png" width="170"> | <img src="docs/screenshots/08-teklif-gonderildi.png" width="170"> | <img src="docs/screenshots/09-kazanc-istatistikleri.png" width="170"> |
+
+Usta aktif ilanları görüp teklif verir; profil, portföy ve puanı müşterilere görünür. Ödemeler uygulama dışında (elden veya anlaşılan yöntemle) yapılır, kazanç ekranı yalnızca istatistik amaçlıdır.
 
 ## Özellikler
 
