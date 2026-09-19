@@ -4,6 +4,17 @@ Müşterileri yakındaki ustalarla buluşturan iki taraflı (müşteri / usta) b
 
 > **Durum:** Android sürümü Google Play'de kapalı testte. Kaynak kod inceleme / portfolyo amacıyla paylaşılmıştır; izinsiz ticari kullanım ve dağıtım hakkı saklıdır.
 
+## Ekran görüntüleri
+
+<p align="center">
+  <img src="docs/screenshots/preview.png" alt="UstaBul ekran görüntüleri" width="100%">
+</p>
+
+| | | | | |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/01-ana-ekran.png" width="170"> | <img src="docs/screenshots/02-hizmet-sec.png" width="170"> | <img src="docs/screenshots/03-ilan-detayi.png" width="170"> | <img src="docs/screenshots/04-ayarlar.png" width="170"> | <img src="docs/screenshots/05-mesajlasma.png" width="170"> |
+| Ana ekran ve hizmet kategorileri | Hizmet seçimi | İlan detayı | Ayarlar, KVKK ve yasal metinler | Müşteri – usta mesajlaşma |
+
 ## Özellikler
 
 - **İlan ve teklif akışı:** kategori bazlı ilan (montaj, boya, tesisat, temizlik, nakliye, elektrik), fotoğraflı ilan, usta teklifleri, teklif kabulü, iş takibi, tamamlama ve puan / yorum
